@@ -112,6 +112,7 @@ Route::post('/upload-foto', function (\Illuminate\Http\Request $request) {
 
     return response()->json(['error' => 'No se recibió archivo'], 400);
 });
+//Probar cambios
 
 
 
