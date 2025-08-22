@@ -3,7 +3,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CombustibleController;
 use App\Http\Controllers\TipoEquipoController;
 use App\Http\Controllers\EquipoController;
-use App\Models\Tipo_Equipo;
+use App\Http\Controllers\CargaController;
+use App\Http\Controllers\OperadorController;
+use App\Http\Controllers\UnidadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -70,6 +72,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('combustibles', CombustibleController::class);
 Route::apiResource('tipo_equipos', TipoEquipoController::class);
 Route::apiResource('equipos', EquipoController::class);
+Route::apiResource('cargas', CargaController::class);
+Route::apiResource('operadors', OperadorController::class);
+Route::apiResource('unidads', UnidadController::class);
 
 
 Route::get('/ping', function () {
@@ -98,6 +103,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/equipos/{id}', [EquipoController::class, 'show']);
     Route::put('/equipos/{id}', [EquipoController::class, 'update']);
     Route::delete('/equipos/{id}', [EquipoController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cargas', [CargaController::class, 'index']);
+    Route::post('/cargas', [CargaController::class, 'store']);
+    Route::get('/cargas/{id}', [CargaController::class, 'show']);
+    Route::put('/cargas/{id}', [CargaController::class, 'update']);
+    Route::delete('/cargas/{id}', [CargaController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/operadors', [OperadorController::class, 'index']);
+    Route::post('/operadors', [OperadorController::class, 'store']);
+    Route::get('/operadors/{id}', [OperadorController::class, 'show']);
+    Route::put('/operadors/{id}', [OperadorController::class, 'update']);
+    Route::delete('/operadors/{id}', [OperadorController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/unidads', [UnidadController::class, 'index']);
+    Route::post('/unidads', [UnidadController::class, 'store']);
+    Route::get('/unidads/{id}', [UnidadController::class, 'show']);
+    Route::put('/unidads/{id}', [UnidadController::class, 'update']);
+    Route::delete('/unidads/{id}', [UnidadController::class, 'destroy']);
 });
 
 Route::post('/upload-foto', function (\Illuminate\Http\Request $request) {

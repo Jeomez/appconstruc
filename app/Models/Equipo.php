@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Equipo extends Model
 {
     protected $fillable = ['numeco', 'nombre', 'tipo', 'placas', 'vigenciaplacas', 'poliza', 'vigenciapoliza', 'noserie',
-                            'ulthorometro', 'combustible', 'responsable', 'operador', 'estado', 'foto', 'obra'];
+                            'ulthorometro', 'combustible', 'responsable', 'operador', 'estado', 'foto', 'obra', 'rango_inferior', 'rango_superior',
+                            'unidad_rend', 'id_operador'];
 }
