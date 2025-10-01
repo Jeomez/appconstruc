@@ -10,10 +10,29 @@ use Illuminate\Support\Facades\Log;
 
 class EquipoController extends Controller
 {
+    public function showByNumeco(string $numeco)
+    {
+        // Ajusta el nombre de columna si no es 'numeco'
+        $equipo = Equipo::where('numeco', $numeco)->first();
+
+        if (!$equipo) {
+            return response()->json(['message' => 'Equipo no encontrado'], 404);
+        }
+
+        
+        return response()->json([
+            'id'             => $equipo->id,
+            'desc_equipo'    => $equipo->descripcion ?? $equipo->nombre ?? '',
+            'id_combustible' => $equipo->combustible ?? $equipo->combustible ?? null,
+            'noserie' => $equipo->noserie ?? $equipo->noserie ?? null,
+            'peso' => $equipo->peso ?? $equipo->peso ?? null,
+        ]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         return Equipo::all();
     }
 
@@ -28,7 +47,8 @@ class EquipoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         Log::info('Payload recibido', $request->all());
 
         $equipo = Equipo::create($request->all());
@@ -38,7 +58,8 @@ class EquipoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id) {
+    public function show($id)
+    {
         return Equipo::findOrFail($id);
     }
 
@@ -53,7 +74,8 @@ class EquipoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $equipo = Equipo::findOrFail($id);
         $equipo->update($request->all());
         return response()->json($equipo, 200);
@@ -62,7 +84,8 @@ class EquipoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         Equipo::destroy($id);
         return response()->json(null, 204);
     }

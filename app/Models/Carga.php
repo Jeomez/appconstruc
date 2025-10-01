@@ -14,7 +14,7 @@ class Carga extends Model
     protected $fillable = [
         'serie','folio','fecha','hora','id_equipo','desc_equipo','horometro',
         'id_combustible','litros','id_obra','foto_ticket','foto_horometro',
-        'latitud','longitud','mes'
+        'latitud','longitud','mes', 'numeco'
     ];
 
     protected $casts = [

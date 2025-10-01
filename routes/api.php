@@ -6,6 +6,7 @@ use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\CargaController;
 use App\Http\Controllers\OperadorController;
 use App\Http\Controllers\UnidadController;
+use App\Http\Controllers\ObraController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -72,9 +73,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('combustibles', CombustibleController::class);
 Route::apiResource('tipo_equipos', TipoEquipoController::class);
 Route::apiResource('equipos', EquipoController::class);
-Route::apiResource('cargas', CargaController::class);
+//Route::apiResource('cargas', CargaController::class);
 Route::apiResource('operadors', OperadorController::class);
 Route::apiResource('unidads', UnidadController::class);
+Route::apiResource('obras', ObraController::class);
 
 
 Route::get('/ping', function () {
@@ -103,14 +105,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/equipos/{id}', [EquipoController::class, 'show']);
     Route::put('/equipos/{id}', [EquipoController::class, 'update']);
     Route::delete('/equipos/{id}', [EquipoController::class, 'destroy']);
+    Route::get('/equipos/numeco/{numeco}', [EquipoController::class, 'showByNumeco']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cargas/next-folio', [CargaController::class, 'nextFolio']);
     Route::get('/cargas', [CargaController::class, 'index']);
     Route::post('/cargas', [CargaController::class, 'store']);
-    Route::get('/cargas/{id}', [CargaController::class, 'show']);
-    Route::put('/cargas/{id}', [CargaController::class, 'update']);
-    Route::delete('/cargas/{id}', [CargaController::class, 'destroy']);
+    Route::get('/cargas/{id}', [CargaController::class, 'show'])->whereNumber('id');
+    Route::put('/cargas/{id}', [CargaController::class, 'update'])->whereNumber('id');
+    Route::delete('/cargas/{id}', [CargaController::class, 'destroy'])->whereNumber('id');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -129,6 +133,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/unidads/{id}', [UnidadController::class, 'destroy']);
 });
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/obras', [ObraController::class, 'index']);
+    Route::post('/obras', [ObraController::class, 'store']);
+    Route::get('/obras/{id}', [ObraController::class, 'show']);
+    Route::put('/obras/{id}', [ObraController::class, 'update']);
+    Route::delete('/obras/{id}', [ObraController::class, 'destroy']);
+});
+
 Route::post('/upload-foto', function (\Illuminate\Http\Request $request) {
     if ($request->hasFile('foto')) {
         // ✅ Guarda correctamente en storage/app/public/fotos
@@ -141,7 +153,11 @@ Route::post('/upload-foto', function (\Illuminate\Http\Request $request) {
 
     return response()->json(['error' => 'No se recibió archivo'], 400);
 });
-//Probar cambios
+
+// routes/api.php
+
+
+
 
 
 

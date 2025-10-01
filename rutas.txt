@@ -1,0 +1,64 @@
+
+  GET|HEAD        / ................................................................................................ 
+  GET|HEAD        api/api/user ..................................................................................... 
+  GET|HEAD        api/cargas ................................................................. CargaController@index
+  POST            api/cargas ................................................................. CargaController@store
+  GET|HEAD        api/cargas/next-folio .................................................. CargaController@nextFolio
+  GET|HEAD        api/cargas/{carga} ............................................ cargas.show › CargaController@show
+  PUT|PATCH       api/cargas/{carga} ........................................ cargas.update › CargaController@update
+  DELETE          api/cargas/{carga} ...................................... cargas.destroy › CargaController@destroy
+  GET|HEAD        api/cargas/{id} ............................................................. CargaController@show
+  PUT             api/cargas/{id} ........................................................... CargaController@update
+  DELETE          api/cargas/{id} .......................................................... CargaController@destroy
+  GET|HEAD        api/combustibles ..................................................... CombustibleController@index
+  POST            api/combustibles ..................................................... CombustibleController@store
+  GET|HEAD        api/combustibles/{combustible} .................... combustibles.show › CombustibleController@show
+  PUT|PATCH       api/combustibles/{combustible} ................ combustibles.update › CombustibleController@update
+  DELETE          api/combustibles/{combustible} .............. combustibles.destroy › CombustibleController@destroy
+  GET|HEAD        api/combustibles/{id} ................................................. CombustibleController@show
+  PUT             api/combustibles/{id} ............................................... CombustibleController@update
+  DELETE          api/combustibles/{id} .............................................. CombustibleController@destroy
+  GET|HEAD        api/equipos ............................................................... EquipoController@index
+  POST            api/equipos ............................................................... EquipoController@store
+  GET|HEAD        api/equipos/{equipo} ........................................ equipos.show › EquipoController@show
+  PUT|PATCH       api/equipos/{equipo} .................................... equipos.update › EquipoController@update
+  DELETE          api/equipos/{equipo} .................................. equipos.destroy › EquipoController@destroy
+  GET|HEAD        api/equipos/{id} ........................................................... EquipoController@show
+  PUT             api/equipos/{id} ......................................................... EquipoController@update
+  DELETE          api/equipos/{id} ........................................................ EquipoController@destroy
+  POST            api/login ........................................................................................ 
+  POST            api/logout ....................................................................................... 
+  GET|HEAD        api/operadors ........................................................... OperadorController@index
+  POST            api/operadors ........................................................... OperadorController@store
+  GET|HEAD        api/operadors/{id} ....................................................... OperadorController@show
+  PUT             api/operadors/{id} ..................................................... OperadorController@update
+  DELETE          api/operadors/{id} .................................................... OperadorController@destroy
+  GET|HEAD        api/operadors/{operador} ................................ operadors.show › OperadorController@show
+  PUT|PATCH       api/operadors/{operador} ............................ operadors.update › OperadorController@update
+  DELETE          api/operadors/{operador} .......................... operadors.destroy › OperadorController@destroy
+  GET|HEAD        api/ping ......................................................................................... 
+  POST            api/register ..................................................................................... 
+  GET|HEAD        api/tipo_equipos ...................................................... TipoEquipoController@index
+  POST            api/tipo_equipos ...................................................... TipoEquipoController@store
+  GET|HEAD        api/tipo_equipos/{id} .................................................. TipoEquipoController@show
+  PUT             api/tipo_equipos/{id} ................................................ TipoEquipoController@update
+  DELETE          api/tipo_equipos/{id} ............................................... TipoEquipoController@destroy
+  GET|HEAD        api/tipo_equipos/{tipo_equipo} ..................... tipo_equipos.show › TipoEquipoController@show
+  PUT|PATCH       api/tipo_equipos/{tipo_equipo} ................. tipo_equipos.update › TipoEquipoController@update
+  DELETE          api/tipo_equipos/{tipo_equipo} ............... tipo_equipos.destroy › TipoEquipoController@destroy
+  GET|HEAD        api/unidads ............................................................... UnidadController@index
+  POST            api/unidads ............................................................... UnidadController@store
+  GET|HEAD        api/unidads/{id} ........................................................... UnidadController@show
+  PUT             api/unidads/{id} ......................................................... UnidadController@update
+  DELETE          api/unidads/{id} ........................................................ UnidadController@destroy
+  GET|HEAD        api/unidads/{unidad} ........................................ unidads.show › UnidadController@show
+  PUT|PATCH       api/unidads/{unidad} .................................... unidads.update › UnidadController@update
+  DELETE          api/unidads/{unidad} .................................. unidads.destroy › UnidadController@destroy
+  POST            api/upload-foto .................................................................................. 
+  GET|HEAD        api/user ......................................................................................... 
+  GET|HEAD        sanctum/csrf-cookie ............ sanctum.csrf-cookie › Laravel\Sanctum › CsrfCookieController@show
+  GET|HEAD        storage/{path} ..................................................................... storage.local
+  GET|HEAD        up ............................................................................................... 
+
+                                                                                                 Showing [60] routes
+

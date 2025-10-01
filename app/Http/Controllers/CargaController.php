@@ -10,6 +10,14 @@ use Carbon\Carbon;
 
 class CargaController extends Controller
 {
+    public function nextFolio(Request $req) {
+        $serie = $req->query('serie');
+        abort_unless($serie, 422, 'serie requerida');
+
+        $next = Carga::where('serie', $serie)->max('folio');
+        return response()->json(['nextFolio' => (int)$next + 1]);
+    }
+
     /**
      * GET /api/cargas
      * Filtros:
@@ -39,7 +47,7 @@ class CargaController extends Controller
             ->select([
                 'id_documento','serie','folio','fecha','mes','hora',
                 'id_equipo','desc_equipo','horometro','id_combustible','litros','id_obra',
-                'foto_ticket','foto_horometro','latitud','longitud',
+                'foto_ticket','foto_horometro','latitud','longitud','numeco',
                 'created_at','updated_at',
             ])
             ->when($mes, fn($q) => $q->where('mes', $mes))
@@ -76,8 +84,8 @@ class CargaController extends Controller
 
     /**
      * POST /api/cargas
-     * Acepta JSON normal; para subir fotos usar multipart/form-data con
-     * campos: foto_ticket (file), foto_horometro (file)
+     * Acepta JSON o multipart/form-data, pero las fotos se envían como **rutas (string)**.
+     * Ejemplo: { foto_ticket: "cargas/tickets/abc.jpg", foto_horometro: "cargas/horometros/xyz.jpg" }
      */
     public function store(Request $request)
     {
@@ -96,26 +104,20 @@ class CargaController extends Controller
             'latitud'         => ['nullable','numeric'],
             'longitud'        => ['nullable','numeric'],
 
-            // Opcional: si te mandan mes en el payload, lo validamos (pero lo recalculamos)
+            // Opcional: si te mandan mes, lo validamos (pero lo recalculamos de todas formas)
             'mes'             => ['nullable','regex:/^[0-9]{6}$/'],
 
-            // Archivos
-            'foto_ticket'     => ['nullable','file','image','max:4096'],    // ~4MB
-            'foto_horometro'  => ['nullable','file','image','max:4096'],
+            // Fotos como STRING (ruta), no archivo
+            'foto_ticket'     => ['nullable','string','max:255'],
+            'foto_horometro'  => ['nullable','string','max:255'],
+
+            'numeco'          => ['required','string'],
         ];
 
         $data = $request->validate($rules);
 
-        // Garantizar mes desde fecha (fallback si el modelo ya no lo hace)
+        // Garantizar mes desde fecha
         $data['mes'] = Carbon::parse($data['fecha'])->format('Ym');
-
-        // Manejo de archivos (si vienen)
-        if ($request->hasFile('foto_ticket')) {
-            $data['foto_ticket'] = $request->file('foto_ticket')->store('cargas/tickets', 'public');
-        }
-        if ($request->hasFile('foto_horometro')) {
-            $data['foto_horometro'] = $request->file('foto_horometro')->store('cargas/horometros', 'public');
-        }
 
         // Unicidad serie-folio
         $exists = Carga::where('serie', $data['serie'])
@@ -145,6 +147,7 @@ class CargaController extends Controller
     /**
      * PUT /api/cargas/{id_documento}
      * PATCH /api/cargas/{id_documento}
+     * (Las fotos siguen siendo STRINGs/rutas)
      */
     public function update(Request $request, int $id)
     {
@@ -170,9 +173,12 @@ class CargaController extends Controller
 
             'mes'             => ['nullable','regex:/^[0-9]{6}$/'], // se recalcula si mandan fecha
 
-            // Archivos
-            'foto_ticket'     => ['sometimes','nullable','file','image','max:4096'],
-            'foto_horometro'  => ['sometimes','nullable','file','image','max:4096'],
+            // Fotos como STRING
+            'foto_ticket'     => ['sometimes','nullable','string','max:255'],
+            'foto_horometro'  => ['sometimes','nullable','string','max:255'],
+
+            // (opcional) permitir actualizar numeco
+            'numeco'          => ['sometimes','string'],
         ];
 
         $data = $request->validate($rules);
@@ -195,21 +201,7 @@ class CargaController extends Controller
             }
         }
 
-        // Manejo de archivos (reemplazar si llegan nuevos)
-        if ($request->hasFile('foto_ticket')) {
-            // opcional: borrar anterior
-            if ($carga->foto_ticket) {
-                Storage::disk('public')->delete($carga->foto_ticket);
-            }
-            $data['foto_ticket'] = $request->file('foto_ticket')->store('cargas/tickets', 'public');
-        }
-        if ($request->hasFile('foto_horometro')) {
-            if ($carga->foto_horometro) {
-                Storage::disk('public')->delete($carga->foto_horometro);
-            }
-            $data['foto_horometro'] = $request->file('foto_horometro')->store('cargas/horometros', 'public');
-        }
-
+        // Ojo: aquí NO manejamos archivos; solo guardamos la ruta que llegue (o null)
         $carga->update($data);
 
         return response()->json($carga);
@@ -225,7 +217,7 @@ class CargaController extends Controller
             return response()->json(['message' => 'No encontrada'], 404);
         }
 
-        // (Opcional) borrar archivos asociados
+        // (Opcional) borrar archivos asociados si tus rutas apuntan a storage/public
         if ($carga->foto_ticket) {
             Storage::disk('public')->delete($carga->foto_ticket);
         }
