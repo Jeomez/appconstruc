@@ -32,7 +32,7 @@ class ReporteRendimientoController extends Controller
         // unidad_rend === 1 -> horas (ajústalo si tus valores son otros)
         $usaHoras = false;
         foreach ($raw as $c) {
-            if (!is_null($c->horometro) || (isset($equipo->unidad_rend) && (int)$equipo->unidad_rend === 1)) {
+            if (!is_null($c->horometro) && (isset($equipo->unidad_rend) && (int)$equipo->unidad_rend === 1)) {
                 $usaHoras = true;
                 break;
             }
@@ -49,7 +49,7 @@ class ReporteRendimientoController extends Controller
                 continue; // ignora registros sin litros válidos
             }
 
-            if ($usaHoras) {
+            if (!$usaHoras) {
                 $prevMed = $prev->horometro ?? null;
                 $currMed = $curr->horometro ?? null;
                 $delta   = (is_numeric($currMed) && is_numeric($prevMed)) ? (float)($currMed - $prevMed) : 0;
