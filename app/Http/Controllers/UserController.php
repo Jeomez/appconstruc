@@ -32,6 +32,9 @@ class UserController extends Controller
             'email'    => ['required','email','max:255','unique:users,email'],
             'password' => ['required','string','min:8'],
             'role'     => ['nullable','string','max:50'], // tienes la migración de role
+            'empresa_id' => ['nullable','integer'],
+            'rol_id' => ['required','integer','exists:roles,id'],
+
         ]);
 
         $data['password'] = Hash::make($data['password']);
@@ -64,6 +67,8 @@ class UserController extends Controller
             'email'    => ['sometimes','required','email','max:255','unique:users,email,'.$user->id],
             'password' => ['nullable','string','min:6'],
             'role'     => ['nullable','string','max:50'],
+            'empresa_id' => ['nullable','integer'],
+            'rol_id' => ['required','integer','exists:roles,id'],
         ]);
 
         if (!empty($data['password'])) {

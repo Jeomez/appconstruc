@@ -34,5 +34,11 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    /**
+     * CONFIGURACION PARA INTERCOMUNICACION CON API_CONSTRUCC
+     */
+    'api_construcciones' => [
+        'url' => env('API_CONSTRUCCIONES_URL', 'http://localhost:8091'),
+      ],
 
 ];
