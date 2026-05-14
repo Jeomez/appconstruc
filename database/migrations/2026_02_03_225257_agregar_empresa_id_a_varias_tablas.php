@@ -8,28 +8,42 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('obras', function (Blueprint $table) {
-            $table->foreignId('empresa_id')->nullable()->constrained('empresas')->restrictOnDelete();
-        });
+        $tables = [
+            'obras',
+            'cargas',
+            'servicios',
+            'operadors',
+            'mantenimiento_reglas',
+        ];
 
-        Schema::table('cargas', function (Blueprint $table) {
-            $table->foreignId('empresa_id')->nullable()->constrained('empresas')->restrictOnDelete();
-        });
+        foreach ($tables as $tableName) {
+            if (Schema::hasTable($tableName) && !Schema::hasColumn($tableName, 'empresa_id')) {
+                Schema::table($tableName, function (Blueprint $table) {
+                    $table->foreignId('empresa_id')
+                        ->nullable()
+                        ->constrained('empresas')
+                        ->restrictOnDelete();
+                });
+            }
+        }
+    }
 
-     
-       
+    public function down(): void
+    {
+        $tables = [
+            'mantenimiento_reglas',
+            'operadors',
+            'servicios',
+            'cargas',
+            'obras',
+        ];
 
-        // Si servicios/operadors/reglas van por empresa también:
-        Schema::table('servicios', function (Blueprint $table) {
-            $table->foreignId('empresa_id')->nullable()->constrained('empresas')->restrictOnDelete();
-        });
-
-        Schema::table('operadors', function (Blueprint $table) {
-            $table->foreignId('empresa_id')->nullable()->constrained('empresas')->restrictOnDelete();
-        });
-
-        Schema::table('mantenimiento_reglas', function (Blueprint $table) {
-            $table->foreignId('empresa_id')->nullable()->constrained('empresas')->restrictOnDelete();
-        });
+        foreach ($tables as $tableName) {
+            if (Schema::hasTable($tableName) && Schema::hasColumn($tableName, 'empresa_id')) {
+                Schema::table($tableName, function (Blueprint $table) {
+                    $table->dropConstrainedForeignId('empresa_id');
+                });
+            }
+        }
     }
 };
