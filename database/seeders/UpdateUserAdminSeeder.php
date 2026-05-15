@@ -12,8 +12,8 @@ class UpdateUserAdminSeeder extends Seeder
         DB::table('users')
             ->where('id', 1)
             ->update([
-                'empresa' => 1,
-                'rol'     => 1,
+                'empresa_id' => 1,
+                'rol' => 1,
             ]);
     }
 }
