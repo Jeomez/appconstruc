@@ -9,17 +9,7 @@ class TipoEquiposSeeder extends Seeder
 {
     public function run(): void
     {
-        // ⚠️ Desactiva FK por si hay relaciones
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-        // 🧹 Limpia la tabla (doble underscore)
-        DB::table('tipo__equipos')->truncate();
-
-        // 🔁 Reactiva FK
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        // 🚀 Inserta los registros
-        DB::table('tipo__equipos')->insert([
+        $tipos = [
             [
                 'id' => 1,
                 'nombre' => 'VEHICULOS',
@@ -40,6 +30,18 @@ class TipoEquiposSeeder extends Seeder
                 'nombre' => 'EQUIPO MENOR',
                 'activo' => 'Si',
             ],
-        ]);
+        ];
+
+        foreach ($tipos as $tipo) {
+            DB::table('tipo__equipos')->updateOrInsert(
+                ['id' => $tipo['id']],
+                [
+                    'nombre' => $tipo['nombre'],
+                    'activo' => $tipo['activo'],
+                    'updated_at' => now(),
+                    'created_at' => DB::raw('COALESCE(created_at, NOW())'),
+                ]
+            );
+        }
     }
 }
