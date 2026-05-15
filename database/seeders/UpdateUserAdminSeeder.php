@@ -13,7 +13,7 @@ class UpdateUserAdminSeeder extends Seeder
             ->where('id', 1)
             ->update([
                 'empresa_id' => 1,
-                'rol' => 1,
+                'rol_id' => 1,
             ]);
     }
 }
