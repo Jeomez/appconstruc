@@ -2,19 +2,32 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
 return new class extends Migration
 {
     private function tableExists(string $table): bool
     {
-        return Schema::hasTable($table);
+        $result = DB::selectOne("
+            SELECT COUNT(*) AS total
+            FROM information_schema.TABLES
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = ?
+        ", [$table]);
+
+        return (int) $result->total > 0;
     }
 
     private function columnExists(string $table, string $column): bool
     {
-        return Schema::hasColumn($table, $column);
+        $result = DB::selectOne("
+            SELECT COUNT(*) AS total
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = ?
+              AND COLUMN_NAME = ?
+        ", [$table, $column]);
+
+        return (int) $result->total > 0;
     }
 
     public function up(): void
@@ -34,22 +47,18 @@ return new class extends Migration
                 continue;
             }
 
-            // Limpia registros existentes antes de hacer NOT NULL
-            DB::table($tableName)
-                ->whereNull('empresa_id')
-                ->orWhere('empresa_id', 0)
-                ->update(['empresa_id' => 1]);
-
-            // Por si en producción quedó algún vacío extraño
             DB::statement("
-                UPDATE {$tableName}
+                UPDATE `$tableName`
                 SET empresa_id = 1
-                WHERE empresa_id = ''
+                WHERE empresa_id IS NULL
+                   OR empresa_id = 0
+                   OR empresa_id = ''
             ");
 
-            Schema::table($tableName, function (Blueprint $table) {
-                $table->unsignedBigInteger('empresa_id')->nullable(false)->change();
-            });
+            DB::statement("
+                ALTER TABLE `$tableName`
+                MODIFY `empresa_id` BIGINT UNSIGNED NOT NULL
+            ");
         }
     }
 
@@ -70,9 +79,10 @@ return new class extends Migration
                 continue;
             }
 
-            Schema::table($tableName, function (Blueprint $table) {
-                $table->unsignedBigInteger('empresa_id')->nullable()->change();
-            });
+            DB::statement("
+                ALTER TABLE `$tableName`
+                MODIFY `empresa_id` BIGINT UNSIGNED NULL
+            ");
         }
     }
 };
